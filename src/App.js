@@ -46,13 +46,17 @@ function App() {
     socket.emit('generateRandomNumber');
   };
 
+  const actionSelected = () => {
+    socket.emit('next');
+  };
+
   return (
     <div className="App">
       <button className="start-button">Start</button>
       <EventCard event={gameStatus.currentEvent}/>
       <div className="buttons-container">
         {gameStatus.currentEvent.actions.map((data) => {
-          return (<button className="card-button">{data}</button>)
+          return (<button className="card-button" onClick={actionSelected}>{data.title}</button>)
         })
         }
       </div>

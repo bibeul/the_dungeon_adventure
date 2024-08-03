@@ -1,5 +1,7 @@
 const express = require('express');
 const events = require('./events')
+const Player = require('./player')
+const characters = require('./character')
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -11,44 +13,15 @@ const io = new Server(server, {
   },
 });
 
-const characters = {
-    smith: {
-        text: 'yes yes yes'
-    },
-    priest: {
-        text: 'yes yes yes'
-    },
-    mailman: {
-        text: 'yes yes yes'
-    },
-    noble: {
-        text: 'yes yes yes'
-    },
-}
-
 const currentPlayer = {}
 let currentEvent = events[0]
 let eventNumber = 0
-let currentPlayerConnected = 0
-
-class Player{
-  constructor(id, characters) {
-    this.id = id;
-    this.characters = characters;
-    this.dice = 0;
-  }
-  
-  roll_dice(){
-    this.dice = Math.floor(Math.random() * 6) + 1;
-  }
-  
-}
 
 function getCurrentGameStatus(currentP){
   console.log({
     numberOfPlayer: Object.keys(currentP).length,
     currentEvent,
-    currentPlayer: currentPlayer,
+    currentPlayer: Object.values(currentPlayer),
   })
     return {
         numberOfPlayer: Object.keys(currentP).length,
@@ -57,20 +30,23 @@ function getCurrentGameStatus(currentP){
     }
 }
 
+function updateEveryone(currentSocket){
+  currentSocket.broadcast.emit('update', getCurrentGameStatus(currentPlayer))
+  currentSocket.emit('update', getCurrentGameStatus(currentPlayer))
+}
+
 io.on('connection', (socket) => {
   console.log('a user connected');
   currentPlayer[socket.id] = new Player(socket.id, characters.smith)
   console.log(`adding ${socket.id}`);
   console.log(currentPlayer)  
 
-  socket.broadcast.emit('update', getCurrentGameStatus(currentPlayer))
-  socket.emit('update', getCurrentGameStatus(currentPlayer))
+  updateEveryone(socket)
 
 
   socket.on('generateRandomNumber', () => {
     currentPlayer[socket.id].roll_dice()
-    socket.broadcast.emit('update', getCurrentGameStatus(currentPlayer))
-    socket.emit('update', getCurrentGameStatus(currentPlayer))
+    updateEveryone(socket)
   });
 
   socket.on('disconnect', () => {
@@ -81,13 +57,15 @@ io.on('connection', (socket) => {
   });
 
   socket.on('next', () => {
+    eventNumber++;
+    if(eventNumber > 1) eventNumber = 0
     currentEvent = events[eventNumber]
-    socket.broadcast.emit('update', getCurrentGameStatus(currentPlayer))
+    updateEveryone(socket)
   })
 
   socket.on('start', () => {
     currentEvent = events[eventNumber]
-    socket.broadcast.emit('update', getCurrentGameStatus(currentPlayer))
+    updateEveryone(socket)
   })
 });
 
