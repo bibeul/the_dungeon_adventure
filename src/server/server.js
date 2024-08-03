@@ -29,23 +29,37 @@ const characters = {
 const currentPlayer = {}
 let currentEvent = events[0]
 let eventNumber = 0
+let currentPlayerConnected = 0
+
+class Player{
+  constructor(id, characters) {
+    this.id = id;
+    this.characters = characters;
+    this.dice = 0;
+  }
+  
+  roll_dice(){
+    this.dice = Math.floor(Math.random() * 6) + 1;
+  }
+  
+}
 
 function getCurrentGameStatus(currentP){
   console.log({
     numberOfPlayer: Object.keys(currentP).length,
     currentEvent,
-    ...currentPlayer,
+    currentPlayer: currentPlayer,
   })
     return {
         numberOfPlayer: Object.keys(currentP).length,
         currentEvent,
-        ...currentPlayer,
+        currentPlayer: Object.values(currentPlayer),
     }
 }
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  currentPlayer[socket.id] = characters.smith
+  currentPlayer[socket.id] = new Player(socket.id, characters.smith)
   console.log(`adding ${socket.id}`);
   console.log(currentPlayer)  
 
@@ -54,9 +68,9 @@ io.on('connection', (socket) => {
 
 
   socket.on('generateRandomNumber', () => {
-    const number = Math.floor(Math.random() * 6) + 1;
-    socket.broadcast.emit('randomNumber', number);
-    socket.emit('randomNumber', number);
+    currentPlayer[socket.id].roll_dice()
+    socket.broadcast.emit('update', getCurrentGameStatus(currentPlayer))
+    socket.emit('update', getCurrentGameStatus(currentPlayer))
   });
 
   socket.on('disconnect', () => {

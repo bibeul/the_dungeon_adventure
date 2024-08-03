@@ -1,11 +1,11 @@
 import React from 'react';
 import './character_cards.css';
 
-const CharacterCard = ({ className, text }) => {
+const CharacterCard = ({ className, player }) => {
   return (
     <div className={ "small-card " + className}>
-    <h3>Small Card</h3>
-    <p>Top Left</p>
+    <h3>{player.id}</h3>
+    <p>{player.dice}</p>
     <img src="https://via.placeholder.com/100" alt="placeholder" />
     <div className="mini-cards">
       <div className="mini-card">

@@ -56,15 +56,15 @@ function App() {
         })
         }
       </div>
-      {numberOfPlayer > 0 ? (
-      <CharacterCard className="small-card top-left"/>) : null}
+      {numberOfPlayer > 0 ? (<>
+      <CharacterCard className="small-card top-left" player={gameStatus.currentPlayer[0]}/>
+      </>) : null}
       {numberOfPlayer > 1 ? (
-      <CharacterCard className="small-card top-right"/>) : null}
+      <CharacterCard className="small-card top-right" player={gameStatus.currentPlayer[1]} />) : null}
       {numberOfPlayer > 2 ? (
-      <CharacterCard className="small-card bottom-left"/>) : null}
+      <CharacterCard className="small-card bottom-left" player={gameStatus.currentPlayer[2]} />) : null}
       {numberOfPlayer > 3 ? (
-      <CharacterCard className="small-card bottom-right"/>) : null}
-      {randomNumber !== null && <h3 className="random-number">Random Number: {randomNumber}</h3>}
+      <CharacterCard className="small-card bottom-right" player={gameStatus.currentPlayer[3]} />) : null}
       <button className="random-button" onClick={generateRandomNumber}>
         Generate Random Number
       </button>
