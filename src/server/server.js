@@ -69,6 +69,10 @@ io.on('connection', (socket) => {
   })
 });
 
+app.get('/test', (req, res) => {
+  res.send('ok')
+})
+
 const PORT = 3001;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

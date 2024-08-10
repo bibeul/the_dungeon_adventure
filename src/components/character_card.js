@@ -14,6 +14,7 @@ const CharacterCard = ({ className, player }) => {
       <div className="mini-card">
         <img src="https://via.placeholder.com/50" alt="placeholder" />
       </div>
+      <p>{player.hp}</p>
     </div>
   </div>
   );
