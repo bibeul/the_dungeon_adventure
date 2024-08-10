@@ -7,8 +7,6 @@ import EventCard from './components/event_card';
 const socket = io('http://localhost:3001'); // Adresse du serveur
 
 function App() {
-  const [randomNumber, setRandomNumber] = useState(null);
-  const [characters, setCharacters] = useState([]);
   const [numberOfPlayer, setNumberOfPlayer] = useState(0)
   const [gameStatus, setGameStatus] = useState({
     currentEvent: {
@@ -61,14 +59,14 @@ function App() {
         }
       </div>
       {numberOfPlayer > 0 ? (<>
-      <CharacterCard className="small-card top-left" player={gameStatus.currentPlayer[0]}/>
+      <CharacterCard className="small-card top-left" player={gameStatus.players[0]}/>
       </>) : null}
       {numberOfPlayer > 1 ? (
-      <CharacterCard className="small-card top-right" player={gameStatus.currentPlayer[1]} />) : null}
+      <CharacterCard className="small-card top-right" player={gameStatus.players[1]} />) : null}
       {numberOfPlayer > 2 ? (
-      <CharacterCard className="small-card bottom-left" player={gameStatus.currentPlayer[2]} />) : null}
+      <CharacterCard className="small-card bottom-left" player={gameStatus.players[2]} />) : null}
       {numberOfPlayer > 3 ? (
-      <CharacterCard className="small-card bottom-right" player={gameStatus.currentPlayer[3]} />) : null}
+      <CharacterCard className="small-card bottom-right" player={gameStatus.players[3]} />) : null}
       <button className="random-button" onClick={generateRandomNumber}>
         Generate Random Number
       </button>

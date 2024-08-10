@@ -13,47 +13,47 @@ const io = new Server(server, {
   },
 });
 
-const currentPlayer = {}
+const players = {}
 let currentEvent = events[0]
 let eventNumber = 0
 
-function getCurrentGameStatus(currentP){
+function getCurrentGameStatus(){
   console.log({
-    numberOfPlayer: Object.keys(currentP).length,
+    numberOfPlayer: Object.keys(players).length,
     currentEvent,
-    currentPlayer: Object.values(currentPlayer),
+    players: Object.values(players),
   })
     return {
-        numberOfPlayer: Object.keys(currentP).length,
+        numberOfPlayer: Object.keys(players).length,
         currentEvent,
-        currentPlayer: Object.values(currentPlayer),
+        players: Object.values(players),
     }
 }
 
 function updateEveryone(currentSocket){
-  currentSocket.broadcast.emit('update', getCurrentGameStatus(currentPlayer))
-  currentSocket.emit('update', getCurrentGameStatus(currentPlayer))
+  currentSocket.broadcast.emit('update', getCurrentGameStatus())
+  currentSocket.emit('update', getCurrentGameStatus())
 }
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  currentPlayer[socket.id] = new Player(socket.id, characters.smith)
+  players[socket.id] = new Player(socket.id, characters.smith)
   console.log(`adding ${socket.id}`);
-  console.log(currentPlayer)  
+  console.log(players)  
 
   updateEveryone(socket)
 
 
   socket.on('generateRandomNumber', () => {
-    currentPlayer[socket.id].roll_dice()
+    players[socket.id].roll_dice()
     updateEveryone(socket)
   });
 
   socket.on('disconnect', () => {
-    delete currentPlayer[socket.id]
+    delete players[socket.id]
     console.log(`removing ${socket.id}`);
     console.log('user disconnected');
-    socket.broadcast.emit('update', getCurrentGameStatus(currentPlayer))
+    socket.broadcast.emit('update', getCurrentGameStatus())
   });
 
   socket.on('next', () => {

@@ -6,6 +6,7 @@ class Player{
       this.hp = 10;
       this.level = 1;
       this.played = false;
+      this.inventory = []
     }
     
     roll_dice(){
