@@ -1,3 +1,11 @@
+const Enemy = require("./enemy");
+
+const eventDiceFace = {
+    str: 0,
+    dxt: 1,
+    wsd: 2
+}
+
 const EventType = Object.freeze({
     Search: 0,
     Trap: 1,
@@ -31,24 +39,27 @@ module.exports = {
     Event,
     Action,
     EventType,
+    eventDiceFace,
     events: [
-        new Event(
-            'starting even',
-            'event de start',
-            EventType.Search,
-            [new Action('ouvrir la porte'), new Action('partir')]
-        ),
-        new Event(
-            'fighting event',
-            'CA BAGARRE',
-            EventType.Combat,
-            [new Action('next')]
-        ),
-        new Event(
-            'ending even',
-            'event de fin',
-            EventType.Search,
-            [new Action('finish')]
-        )
+    new Event(
+        'starting even',
+        'event de start',
+        EventType.Search,
+        [new Action('ouvrir la porte'), new Action('partir')]
+    ),
+    new Event(
+        'fighting event',
+        'CA BAGARRE',
+        EventType.Combat,
+        [new Action('next')],
+        null,
+        new Enemy('méchant', 'très vilain', [eventDiceFace.dxt, eventDiceFace.str], 2)
+    ),
+    new Event(
+        'ending even',
+        'event de fin',
+        EventType.Search,
+        [new Action('finish')]
+    )
     ]
 }

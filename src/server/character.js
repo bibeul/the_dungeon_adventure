@@ -7,6 +7,7 @@ const characterDiceFace = {
     db_dxt: 5,
 }
 
+const blockDiceFace = [characterDiceFace.db_dxt, characterDiceFace.db_str, characterDiceFace.db_wsd]
 
 const characters = {
     smith: {
@@ -49,5 +50,6 @@ const characters = {
 
 module.exports = {
     characters,
-    characterDiceFace
+    characterDiceFace,
+    blockDiceFace
 }

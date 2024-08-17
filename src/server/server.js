@@ -29,6 +29,9 @@ io.on('connection', (socket) => {
 
   socket.on('generateRandomNumber', () => {
     gameManager.players[socket.id].roll_dice()
+    if(gameManager.hasEveryonePlayed()){
+      gameManager.enemyTurn()
+    }
     updateEveryone(socket)
   });
 

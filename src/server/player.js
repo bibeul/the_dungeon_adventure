@@ -10,9 +10,14 @@ class Player{
     }
     
     roll_dice(){
+      if(this.played){
+        console.log('already played')
+        return
+      }
       this.dice = this.character.dice[Math.floor(Math.random() * 6)];
+      this.played = true
     }
   }
 
-module.exports = Player
+module.exports = Player 
   
