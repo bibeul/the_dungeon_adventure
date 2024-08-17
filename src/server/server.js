@@ -1,11 +1,15 @@
+const path = require('path')
 const express = require('express');
-const {events} = require('./events')
+const cors = require('cors')
+const {events, EventType} = require('./events')
 const Player = require('./player')
 const GameManager = require('./gameManager')
 const { characters, diceFace } = require('./character')
 const http = require('http');
 const { Server } = require('socket.io');
 
+
+const dir = path.join(__dirname, 'public');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -21,6 +25,9 @@ function updateEveryone(currentSocket){
   currentSocket.emit('update', gameManager.getCurrentGameStatus())
 }
 
+app.use(express.static(dir));
+app.use(cors())
+
 io.on('connection', (socket) => {
   console.log('a user connected');
   gameManager.addPlayer(socket.id, new Player(socket.id, characters.smith))
@@ -29,7 +36,7 @@ io.on('connection', (socket) => {
 
   socket.on('generateRandomNumber', () => {
     gameManager.players[socket.id].roll_dice()
-    if(gameManager.hasEveryonePlayed()){
+    if(gameManager.hasEveryonePlayed() && gameManager.currentEvent.type == EventType.Combat){
       gameManager.enemyTurn()
     }
     updateEveryone(socket)
@@ -54,6 +61,17 @@ io.on('connection', (socket) => {
 
 app.get('/test', (req, res) => {
   res.send('ok')
+})
+
+app.get('/dice_image', (req, res) => {
+  res.send({
+    0: 'str.png',
+    1: 'dxt.png',
+    2: 'wsd.png',
+    3: 'db_wsd.png',
+    4: 'db_str.png',
+    5: 'db_dxt.png',
+  })
 })
 
 const PORT = 3001;
