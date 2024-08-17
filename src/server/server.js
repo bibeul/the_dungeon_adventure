@@ -1,7 +1,8 @@
 const express = require('express');
-const events = require('./events')
+const {events} = require('./events')
 const Player = require('./player')
-const characters = require('./character')
+const GameManager = require('./gameManager')
+const { characters, diceFace } = require('./character')
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -13,53 +14,32 @@ const io = new Server(server, {
   },
 });
 
-const players = {}
-let currentEvent = events[0]
-let eventNumber = 0
-
-function getCurrentGameStatus(){
-  console.log({
-    numberOfPlayer: Object.keys(players).length,
-    currentEvent,
-    players: Object.values(players),
-  })
-    return {
-        numberOfPlayer: Object.keys(players).length,
-        currentEvent,
-        players: Object.values(players),
-    }
-}
+const gameManager = new GameManager(events[0], events)
 
 function updateEveryone(currentSocket){
-  currentSocket.broadcast.emit('update', getCurrentGameStatus())
-  currentSocket.emit('update', getCurrentGameStatus())
+  currentSocket.broadcast.emit('update', gameManager.getCurrentGameStatus())
+  currentSocket.emit('update', gameManager.getCurrentGameStatus())
 }
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  players[socket.id] = new Player(socket.id, characters.smith)
-  console.log(`adding ${socket.id}`);
-  console.log(players)  
-
+  gameManager.addPlayer(socket.id, new Player(socket.id, characters.smith))
   updateEveryone(socket)
 
 
   socket.on('generateRandomNumber', () => {
-    players[socket.id].roll_dice()
+    gameManager.players[socket.id].roll_dice()
     updateEveryone(socket)
   });
 
   socket.on('disconnect', () => {
-    delete players[socket.id]
-    console.log(`removing ${socket.id}`);
+    gameManager.removePlayer(socket.id)
     console.log('user disconnected');
-    socket.broadcast.emit('update', getCurrentGameStatus())
+    socket.broadcast.emit('update', gameManager.getCurrentGameStatus())
   });
 
   socket.on('next', () => {
-    eventNumber++;
-    if(eventNumber > 1) eventNumber = 0
-    currentEvent = events[eventNumber]
+    gameManager.nextEvent() 
     updateEveryone(socket)
   })
 

@@ -6,11 +6,14 @@ const EventType = Object.freeze({
 })
 
 class Event{
-    constructor(title, description, type, actions, image) {
+    constructor(title, description, type, actions, image, enemy=null) {
         this.title = title;
         this.description = description;
         this.type = type;
         this.actions = actions;
+        if (type == EventType.Combat){
+            this.enemy = enemy
+        }
         this.image = image;
       }
 }
@@ -24,17 +27,28 @@ class Action{
     }
 }
 
-module.exports = [
-    new Event(
-        'starting even',
-        'event de start',
-        EventType.Search,
-        [new Action('ouvrir la porte'), new Action('partir')]
-    ),
-    new Event(
-        'ending even',
-        'event de fin',
-        EventType.Search,
-        [new Action('finish')]
-    )
-]
+module.exports = {
+    Event,
+    Action,
+    EventType,
+    events: [
+        new Event(
+            'starting even',
+            'event de start',
+            EventType.Search,
+            [new Action('ouvrir la porte'), new Action('partir')]
+        ),
+        new Event(
+            'fighting event',
+            'CA BAGARRE',
+            EventType.Combat,
+            [new Action('next')]
+        ),
+        new Event(
+            'ending even',
+            'event de fin',
+            EventType.Search,
+            [new Action('finish')]
+        )
+    ]
+}

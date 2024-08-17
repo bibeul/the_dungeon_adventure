@@ -23,14 +23,12 @@ function App() {
 
     socket.on('randomNumber', (number) => {
       console.log(number)
-      setRandomNumber(number);
     });
 
     socket.on('update', (updateData) => {
       console.log(updateData);
       setNumberOfPlayer(updateData.numberOfPlayer);
       setGameStatus(updateData);
-      setRandomNumber(updateData.randomnumber);
     });
 
     return () => {

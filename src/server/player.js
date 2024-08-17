@@ -1,7 +1,7 @@
 class Player{
-    constructor(id, characters) {
+    constructor(id, character) {
       this.id = id;
-      this.characters = characters;
+      this.character = character;
       this.dice = 0;
       this.hp = 10;
       this.level = 1;
@@ -10,9 +10,9 @@ class Player{
     }
     
     roll_dice(){
-      this.dice = Math.floor(Math.random() * 100) + 1;
+      this.dice = this.character.dice[Math.floor(Math.random() * 6)];
     }
   }
 
-  module.exports = Player
+module.exports = Player
   
